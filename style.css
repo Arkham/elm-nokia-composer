@@ -1,0 +1,29 @@
+* {
+  font-family: VT323;
+}
+
+body {
+  font-size: 40px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#nokia-composer {
+  font-size: 40px;
+  width: 400px;
+  height: 400px;
+  background: #76a47d;
+  color: #20291d;
+  border: 4px solid #d4d5da;
+}
+
+button {
+  margin-top: 60px;
+  font-size: 60px;
+  font-weight: bold;
+  cursor: pointer;
+}
