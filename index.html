@@ -49,12 +49,10 @@
       console.log(data);
       context = new AudioContext();
 
-      let isLooping = true;
-
-      if (isLooping) {
-        playLoop(data, context);
+      if (data.looping) {
+        playLoop(data.ringtone, context);
       } else {
-        let result = play(data, context);
+        let result = play(data.ringtone, context);
 
         result.lastOscillator.onended = function() {
           app.ports.finished.send("done");

@@ -22,6 +22,7 @@ type alias Model =
     , status : Status
     , bpm : Int
     , alertMessage : String
+    , isLooping : Bool
     }
 
 
@@ -29,6 +30,7 @@ type Msg
     = SetInput String
     | ChangeBPM Int
     | SetRingtone Ringtone
+    | ToggleLooping
     | Play
     | Stop
 
@@ -57,7 +59,7 @@ barbieGirl : Ringtone
 barbieGirl =
     { name = "Barbie Girl"
     , value = "8#g2 8e2 8#g2 8#c3 4a2 4- 8#f2 8#d2 8#f2 8b2 4#g2 8#f2 8e2 4- 8e2 8#c2 4#f2 4#c2 4- 8#f2 8e2 4#g2 4#f2 4-"
-    , tempo = 125
+    , tempo = 140
     }
 
 
@@ -66,6 +68,14 @@ theSimpsons =
     { name = "The Simpsons"
     , value = "4c2 4e2 4#f2 8a2 4.g2 4e2 4c2 8a1 8#f1 8#f1 8#f1 2g1 4- 8#f1 8#f1 8#f1 8g1 4#a1 8c2 8c2 8c2 4c2 4-"
     , tempo = 160
+    }
+
+
+myHeart : Ringtone
+myHeart =
+    { name = "My Heart Will Go On"
+    , value = "2d2 2e2 4a1 2a2 4g2 8#f2 2e2 4#f2 4g2 2#f2 4e2 4d2 4#c2 2d2 4#c2 1b1 1a1 1d2 2e2 4a1 2a2 4g2 8#f2 2e2 4#f2 4g2 2#f2 4e2 4d2 4#c2 2d2 4#c2 4#c2 2d2 4e2 2#f2 2e2 1d2"
+    , tempo = 140
     }
 
 
@@ -87,14 +97,21 @@ classic =
 
 allRingtones : List Ringtone
 allRingtones =
-    [ theGoodTheBad, barbieGirl, theSimpsons, classic, neverGonna ]
+    [ theGoodTheBad
+    , barbieGirl
+    , theSimpsons
+    , myHeart
+    , classic
+    , neverGonna
+    ]
 
 
 initialModel : Model
 initialModel =
     { userInput = theGoodTheBad.value
+    , bpm = theGoodTheBad.tempo
     , status = Idle
-    , bpm = 63
+    , isLooping = False
     , alertMessage = ""
     }
 
@@ -141,20 +158,37 @@ view model =
             , Html.span [] [ Html.text (String.fromInt model.bpm) ]
             ]
         , Html.text model.alertMessage
-        , case model.status of
-            Playing ->
-                Html.button
-                    [ Attr.class "play"
-                    , Events.onClick Stop
-                    ]
-                    [ Html.text "Stop" ]
+        , Html.div [ Attr.class "buttons" ]
+            [ case model.status of
+                Playing ->
+                    Html.button
+                        [ Attr.class "play"
+                        , Attr.class "big"
+                        , Events.onClick Stop
+                        ]
+                        [ Html.text "Stop" ]
 
-            Idle ->
-                Html.button
-                    [ Attr.class "play"
-                    , Events.onClick Play
-                    ]
-                    [ Html.text "Play" ]
+                Idle ->
+                    Html.button
+                        [ Attr.class "play"
+                        , Attr.class "big"
+                        , Events.onClick Play
+                        ]
+                        [ Html.text "Play" ]
+            , Html.button
+                ([ Attr.class "loop"
+                 , Attr.class "big"
+                 , Events.onClick ToggleLooping
+                 ]
+                    ++ (if model.isLooping then
+                            []
+
+                        else
+                            [ Attr.class "loop--inactive" ]
+                       )
+                )
+                [ Html.text "Loop" ]
+            ]
         , Html.div [ Attr.class "ringtones" ] <|
             List.map
                 (\ringtone ->
@@ -177,6 +211,9 @@ update msg model =
         ChangeBPM newValue ->
             ( { model | bpm = newValue }, Cmd.none )
 
+        ToggleLooping ->
+            ( { model | isLooping = not model.isLooping }, Cmd.none )
+
         SetRingtone { value, tempo } ->
             ( { model | userInput = value, bpm = tempo, status = Idle }, stop () )
 
@@ -184,7 +221,11 @@ update msg model =
             case RTTL.parseComposer { tempo = model.bpm } model.userInput of
                 Ok value ->
                     ( { model | status = Playing }
-                    , play (RTTL.encode value)
+                    , play <|
+                        Encode.object
+                            [ ( "looping", Encode.bool model.isLooping )
+                            , ( "ringtone", RTTL.encode value )
+                            ]
                     )
 
                 Err _ ->
