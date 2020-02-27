@@ -239,7 +239,7 @@ update msg model =
             ( { model | bpm = newValue }, Cmd.none )
 
         ToggleLooping ->
-            ( { model | isLooping = not model.isLooping }, Cmd.none )
+            ( { model | isLooping = not model.isLooping, status = Idle }, stop () )
 
         SetRingtone { value, tempo } ->
             ( { model | userInput = value, bpm = tempo, status = Idle }, stop () )
