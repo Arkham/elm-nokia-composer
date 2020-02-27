@@ -21,12 +21,25 @@
 
       return tune.reduce(function(acc, elem) {
         let oscillator = context.createOscillator();
-        oscillator.connect(context.destination);
         oscillator.setPeriodicWave(wave);
         oscillator.frequency.value = elem.frequency;
-        console.log(acc.now, elem.duration);
-        oscillator.start(context.currentTime + acc.now);
-        oscillator.stop(context.currentTime + acc.now + elem.duration - 0.002);
+
+        let gainNode = context.createGain();
+        gainNode.gain.value = 0;
+
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+
+        let startMoment = context.currentTime + acc.now;
+        let endMoment = startMoment + elem.duration;
+
+        if (elem.frequency !== 0) {
+          gainNode.gain.setTargetAtTime(1.0, startMoment, 0.002);
+          gainNode.gain.setTargetAtTime(0, endMoment - 0.002, 0.002);
+        }
+
+        oscillator.start(startMoment);
+        oscillator.stop(endMoment);
 
         return({
           now: acc.now + elem.duration,
