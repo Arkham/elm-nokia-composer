@@ -1,0 +1,17 @@
+language: elm
+
+env:
+  global:
+    - PUBLIC_URL="https://arkham.github.io/elm-nokia-composer"
+
+script:
+  - npm install -g parcel-bundler
+  - npm run build
+
+deploy:
+  github-token: $GITHUB_TOKEN
+  local-dir: dist
+  provider: pages
+  skip-cleanup: true
+  on:
+    branch: master
