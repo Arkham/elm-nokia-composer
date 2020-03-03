@@ -1,2 +1,6 @@
-elm-stuff
+.cache/
+.eslintrc.js
 app.js
+dist/
+elm-stuff
+node_modules/

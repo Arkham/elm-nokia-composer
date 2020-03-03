@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build": "parcel build --no-minify --public-url ${PUBLIC_URL:-/} index.html",
+    "start": "parcel index.html"
+  },
+  "devDependencies": {
+    "elm-hot": "^1.1.4",
+    "node-elm-compiler": "^5.0.4"
+  }
+}
