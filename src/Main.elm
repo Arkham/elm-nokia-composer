@@ -98,7 +98,7 @@ missionImpossible =
 myHeart : Ringtone
 myHeart =
     { name = "My Heart Will Go On"
-    , value = "2d2 2e2 4a1 2a2 4g2 8#f2 2e2 4#f2 4g2 2#f2 4e2 4d2 4#c2 2d2 4#c2 1b1 1a1 1d2 2e2 4a1 2a2 4g2 8#f2 2e2 4#f2 4g2 2#f2 4e2 4d2 4#c2 2d2 4#c2 4#c2 2d2 4e2 2#f2 2e2 1d2"
+    , value = "1d2 2e2 4e2 16- 8a1 2a2 4g2 8#f2 2e2 8e2 4#f2 4g2 2#f2 4e2 8.d2 16- 4#c2 2d2 4#c2 2.b1 8#c2 8b1 2.a1 8.a1 16.- 2.d2 8.d2 16.- 2.e2 4a1 2a2 4g2 8#f2 2e2 8- 4#f2 4g2 2#f2 4e2 4d2 4#c2 4.d2 8- 4#c2 4#c2 4.d2 8- 4e2 4.#f2 16g2 16#f2 4.e2 16#f2 16e2 1d2"
     , tempo = 140
     }
 
